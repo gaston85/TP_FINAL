@@ -54,9 +54,8 @@ variables_necesarias<-lista_variables(ruta_del_archivo,rutas_variables)
 
 tasa_pp<-as.data.frame(variables_necesarias$precipRateESurface)
 factor_reflectividad<-as.data.frame(variables_necesarias$zFactorFinalESurface)
-lat<-as.data.frame(variables_necesarias$Latitude)
-lon<-as.data.frame(variables_necesarias$Longitude)
+lat<-as.vector(variables_necesarias$Latitude)
+lon<-as.vector(variables_necesarias$Longitude)
 
-
-ggplot(tasa_pp,aes(x=lon,y=lat))
+ggplot(tasa_pp) + geom_point(data=data.frame(lon=lon,lat=lat),aes(x=lon,y=lat))
   
