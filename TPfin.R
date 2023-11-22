@@ -1,6 +1,6 @@
 library(hdf5r)
 library(ggplot2)
-
+library(metR)
 lista_variables<-function(ruta_archivo,lista_rutas){
   #Ingresan rutas con formato "FS/SLV/variable"
   
@@ -46,8 +46,17 @@ lista_variables<-function(ruta_archivo,lista_rutas){
 }
 
 nombre_archivo<-"2A.GPM.DPR.V9-20211125.20231030-S074316-E091549.054943.V07B.HDF5"
-data<-paste(getwd(),nombre_archivo,sep = "/")
-rutas<-list("FileHeader","InputRecord","AlgorithmRuntimeInfo","NavigationRecord","FileInfo","JAXAInfo","FS/Latitude",
-            "FS/Longitude","FS/SLV/precipRateESurface","FS/SLV/zFactorFinalESurface")
+ruta_del_archivo<-paste(getwd(),nombre_archivo,sep = "/")
+#rutas:("FileHeader","InputRecord","AlgorithmRuntimeInfo","NavigationRecord","FileInfo","JAXAInfo","FS/Latitude","FS/Longitude","FS/SLV/precipRateESurface","FS/SLV/zFactorFinalESurface")
 
-datos<-lista_variables(data,rutas)
+rutas_variables<-list("FS/Latitude","FS/Longitude","FS/SLV/precipRateESurface","FS/SLV/zFactorFinalESurface")
+variables_necesarias<-lista_variables(ruta_del_archivo,rutas_variables)
+
+tasa_pp<-as.data.frame(variables_necesarias$precipRateESurface)
+factor_reflectividad<-as.data.frame(variables_necesarias$zFactorFinalESurface)
+lat<-as.data.frame(variables_necesarias$Latitude)
+lon<-as.data.frame(variables_necesarias$Longitude)
+
+
+ggplot(tasa_pp,aes(x=lon,y=lat))
+  
