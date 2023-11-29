@@ -64,11 +64,11 @@ datos$PP[datos$Ref==min(datos$PP)]<-NA
 
 graf_Ref <- ggplot(datos,aes(x=lon,y=lat)) + 
   geom_path(map_data("world"),mapping=aes(long,lat,group=group),linewidth=0.1)+ 
-  coord_quickmap(xlim = range(-50,-60),ylim = range(-25.28,-32)) +
+  coord_quickmap(xlim = range(-51,-56.5),ylim = range(-25.28,-30)) +
   # coord_quickmap(xlim = range(-90,-30),ylim = range(-40, 10)) +
   geom_point(datos,mapping=aes(x=lon,y=lat,color=Ref),size=3)+my_scale #scale_fill_(palette = "Spectral", breaks=seq(-30,80,5))
 
-
+graf_Ref
 display.brewer.all()
 my_scale <- scale_colour_gradientn(name="Reflectividad",colours=rev(brewer.pal(9,"Spectral")),
                                    limits=c(10,80),
@@ -77,18 +77,40 @@ my_scale <- scale_colour_gradientn(name="Reflectividad",colours=rev(brewer.pal(9
 
 graf_PP <- ggplot(datos,aes(x=lon,y=lat)) + 
   geom_path(map_data("world"),mapping=aes(long,lat,group=group),linewidth=0.1)+ 
-  coord_quickmap(xlim = range(-50,-60),ylim = range(-25.28,-32)) +
+  coord_quickmap(xlim = range(-51,-56.5),ylim = range(-25.28,-30)) +
   # coord_quickmap(xlim = range(-90,-30),ylim = range(-40, 10)) +
   geom_point(datos,mapping=aes(x=lon,y=lat,color=PP),size=3)+my_scale2
-my_scale2 <- scale_colour_discrete(name="Tasa de Precipitacion",colours=rev(brewer.pal(9,"Blues")),
+
+my_scale2 <- scale_colour_gradientn(name="Tasa de Precipitacion",colours=rev(brewer.pal(9,"Blues")),
                                    limits=c(0,100),
                                    na.value = "white",breaks=pretty_breaks(n=9),aesthetics = c("colour","fill"))
-
+graf_PP
 graf_PP+graf_Ref
 
+
+#GRAFICO DE DISPERSION !!!!!!!!
 plot(y=datos$PP,x=datos$Ref,xlim = c(0,70),ylim = c(0,300))
 
 
 #c
 
-variables_espaciales
+rutas_variables_Z<-list("FS/Latitude","FS/Longitude","FS/PRE/height","FS/SLV/precipRate","FS/SLV/zFactorFinal")
+
+variables_necesarias_Z<-lista_variables(ruta_del_archivo,rutas_variables_Z)
+
+datos_Z<-data.frame(lat=as.vector(variables_necesarias_Z$Latitude),
+                    lon=as.vector(variables_necesarias_Z$Longitude),
+                    altura=as.vector(variables_necesarias_Z$height),
+                    pp=as.vector(variables_necesarias_Z$precipRate),
+                    reflec=as.vector(variables_necesarias_Z$zFactorFinal))
+datos_Z$reflec[datos_Z$reflec==min(datos_Z$reflec)]<-NA
+datos_Z$pp[datos_Z$pp==min(datos_Z$pp)]<-NA
+
+graf_Ref_Z <- ggplot(datos_Z,aes(x=lon,y=lat,z=altura)) +
+  #geom_path(map_data("world"),mapping=aes(long,lat,group=group),linewidth=0.1)+ 
+  coord_quickmap(xlim = range(-51,-56.5),ylim = range(-25.28,-30)) +
+  geom_point(datos_Z,mapping=aes(x=lon,y=lat,color=reflec),size=3) #scale_fill_(palette = "Spectral", breaks=seq(-30,80,5))
+
+graf_Ref_Z
+
+
